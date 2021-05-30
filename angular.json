@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "websocket-table-projekct": {
+    "websocket-table-project": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/websocket-table-projekct",
+            "outputPath": "dist/websocket-table-project",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "websocket-table-projekct:build:production"
+              "browserTarget": "websocket-table-project:build:production"
             },
             "development": {
-              "browserTarget": "websocket-table-projekct:build:development"
+              "browserTarget": "websocket-table-project:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "websocket-table-projekct:build"
+            "browserTarget": "websocket-table-project:build"
           }
         },
         "test": {
@@ -107,5 +107,5 @@
       }
     }
   },
-  "defaultProject": "websocket-table-projekct"
+  "defaultProject": "websocket-table-project"
 }
