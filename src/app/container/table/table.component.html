@@ -1,4 +1,4 @@
-<ng-container *ngIf="tableData$ | async as tableData; else tableLoading">
+<ng-container *ngIf="tableData; else tableLoading">
   <app-table [tableData]="tableData"></app-table>
 </ng-container>
 <ng-template #tableLoading>Loading...</ng-template>

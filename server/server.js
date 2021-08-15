@@ -1,12 +1,20 @@
-// todo: zmienić zapis na modułowy?
 const WebSocket = require('ws');
 const BehaviorSubject = require('rxjs/BehaviorSubject').BehaviorSubject;
+const faker = require('faker');
+
+const dataGenerator = require('./data-generator.js');
+
+// configuration
+const intervalTime = 5000;
+const nrOfObjects = 100;
+const dataChangeChance = 0.2;
 
 const wss = new WebSocket.Server({
   port: 8080,
 });
-
-let tableDataSubject = new BehaviorSubject(0); // domyślna wartość do ustawienia
+let tableDataSubject = new BehaviorSubject(
+  dataGenerator.generateFakerData(faker, nrOfObjects)
+);
 let tableDataInterval;
 
 wss.on('listening', () => {
@@ -14,11 +22,10 @@ wss.on('listening', () => {
 
   // start streaming
   tableDataInterval = setInterval(() => {
-    // pobranie/generacja danych
-    const result = Math.random();
-    console.log(result);
-    tableDataSubject.next(result);
-  }, 5000); // czas jako const
+    // update data
+    const updatedTableData = dataGenerator.updateFakerData(faker, tableDataSubject.getValue(), dataChangeChance);
+    tableDataSubject.next(updatedTableData);
+  }, intervalTime);
 });
 
 wss.on('connection', (ws) => {
@@ -26,8 +33,7 @@ wss.on('connection', (ws) => {
   
   // subscribe to stream
   const tableDataSubscription = tableDataSubject.subscribe((tableData) => {
-    console.log(`newResult ${tableData}`);
-    ws.send(tableData);
+    ws.send(JSON.stringify(tableData));
   });
   
   ws.on('close', () => {
@@ -41,7 +47,7 @@ wss.on('connection', (ws) => {
 });
 
 wss.on('error', () => {
-  console.log('wss error'); // obsługa błędów do zrobienia
+  console.log('wss error');
 });
 
 wss.on('close', () => {
@@ -51,6 +57,6 @@ wss.on('close', () => {
   clearInterval(tableDataInterval);
 });
 
-setTimeout(() => {
-  wss.close();
-}, 60*1000)
+// setTimeout(() => {
+//   wss.close();
+// }, 60*1000)

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Observable, of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { TableData } from 'src/app/interfaces/table-data.interface';
@@ -12,7 +12,7 @@ import { TableService } from 'src/app/services/table/table.service';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
-  public tableData$: Observable<TableData[]>;
+  public tableData: TableData[];
   private destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -20,11 +20,10 @@ export class TableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tableData$ = this.tableService.fetchTableData();
     this.tableService.connectToTableData().pipe(
       takeUntil(this.destroyed$)
-    ).subscribe((testNumber: number) => {
-      console.log(testNumber);
+    ).subscribe((tableData: TableData[]) => {
+      this.tableData = tableData;
     }, error => {
       console.log(error);
     }, () => {
