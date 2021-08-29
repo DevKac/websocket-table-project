@@ -31,13 +31,13 @@
   <!-- Available Column -->
   <ng-container matColumnDef="available">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Available </th>
-    <td mat-cell *matCellDef="let element"> {{element.available}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.available ? 'Available' : 'Non available'}} </td>
   </ng-container>
 
   <!-- Date introduced Column -->
   <ng-container matColumnDef="dateIntroduced">
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Date Introduced </th>
-    <td mat-cell *matCellDef="let element"> {{element.dateIntroduced}} </td>
+    <td mat-cell *matCellDef="let element"> {{element.dateIntroduced | displayDate}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

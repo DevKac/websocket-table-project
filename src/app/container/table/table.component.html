@@ -1,4 +1,22 @@
-<ng-container *ngIf="tableData; else tableLoading">
-  <app-table [tableData]="tableData"></app-table>
+<ng-container [ngSwitch]="tableDataState">
+  <app-table *ngSwitchCase="dataState.SUCCESS"
+    [tableData]="tableData"
+  ></app-table>
+
+  <ng-container *ngSwitchCase="dataState.ERROR">
+    <mat-card>
+      <mat-card-content>
+        <p>
+          Unfortunately table data could not be loaded or connection was lost. Please press "Try again" button below to restart fetching data.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="resetFetchingTableData()">Try again</button>
+      </mat-card-actions>
+    </mat-card>
+  </ng-container>
+
+  <ng-container *ngSwitchDefault>
+    <mat-spinner></mat-spinner>
+  </ng-container>
 </ng-container>
-<ng-template #tableLoading>Loading...</ng-template>

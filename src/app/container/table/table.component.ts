@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from "@angular/common/http";
 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DataState } from 'src/app/enums/data-state.enum';
 
 import { TableData } from 'src/app/interfaces/table-data.interface';
 import { TableService } from 'src/app/services/table/table.service';
@@ -13,6 +15,8 @@ import { TableService } from 'src/app/services/table/table.service';
 })
 export class TableComponent implements OnInit {
   public tableData: TableData[];
+  public tableDataState: DataState;
+  public readonly dataState: typeof DataState = DataState;
   private destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -20,18 +24,37 @@ export class TableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.tableService.connectToTableData().pipe(
-      takeUntil(this.destroyed$)
-    ).subscribe((tableData: TableData[]) => {
-      this.tableData = tableData;
-    }, error => {
-      console.log(error);
-    }, () => {
-      console.log('Table Data Complete');
-    })
+    this.initFetchingTableData();
   }
 
   ngOnDestroy() {
     this.destroyed$.next();
+  }
+
+  public resetFetchingTableData(): void {
+    this.initFetchingTableData();
+  }
+
+  private initFetchingTableData(): void {
+    this.tableDataState = DataState.LOADING;
+
+    this.tableService.connectToTableData().pipe(
+      takeUntil(this.destroyed$)
+    ).subscribe((tableData: TableData[]) => {
+      this.tableData = tableData;
+      this.tableDataState = DataState.SUCCESS;
+    }, error => {
+      this.handleFetchingTableData(error);
+    }, () => {
+      this.handleFetchingTableData();
+    })
+  }
+
+  private handleFetchingTableData(error?: HttpErrorResponse): void {
+    if (error) {
+      console.error(error);
+    }
+    this.tableData = [];
+    this.tableDataState = DataState.ERROR;
   }
 }
